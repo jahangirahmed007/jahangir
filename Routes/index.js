@@ -1,31 +1,20 @@
 const router = require('express').Router();
-
 const model = require('../model/index');
-// const getlinks = require('../index');
 const request = require('request');
 const cheerio = require('cheerio');
 
 router.get('/', (req, res) => {
-
-    // console.log(req.params.address);  
-    // getlinks(req.params.address);
-    // const { links } = getlinks;
-    // console.log(links, 'these are links');
-
     try {
         if (req.query.address) {
             let counter = 0;
-            // https://j-alissa.herokuapp.com/
-            // let url = `http://${req.query.address}`;
             let url = req.query.address.split(":")
             if (url[0] === 'http' || url[0] === 'https')
                 url = req.query.address
             else
                 url = `http://${req.query.address}`
-            console.log(url);
             request(url, (err, response, html) => {
                 if (err) {
-                    return res.status(200).send("No Response")
+                    return res.status(200).send({ msg: "No Response" })
                 }
                 const csslinks = [];
                 const jslinks = [];
@@ -60,9 +49,6 @@ router.get('/', (req, res) => {
                     }).catch(err => {
                         res.status(500).send("Something went wrong.")
                     })
-                    // console.log({ css: csslinks, js: jslinks });
-                    // return res.send({ css: csslinks, js: jslinks })
-
                 }
             })
         } else {
@@ -71,7 +57,7 @@ router.get('/', (req, res) => {
             })
         }
     } catch (e) {
-        res.status(200).send('No Response')
+        res.status(200).send({ msg: 'No Response' })
     }
 })
 module.exports = router;
